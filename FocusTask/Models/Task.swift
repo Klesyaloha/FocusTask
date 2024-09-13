@@ -15,5 +15,6 @@ struct Task : Identifiable {
     var progress: Int
     let deadline: Date
     var isFinish: Bool
-    let categories: [Category]
+    var isImportant: Bool
+    let categories: Category
 }

@@ -38,8 +38,9 @@ class MyAppData: ObservableObject {
                 time: Time(hours: 2, minutes: 30, secondes: 0),
                 progress: 0,
                 deadline: Date(),
-                isFinish: false,
-                categories: [categories[1]] // Work
+                isFinish: false, 
+                isImportant: true,
+                categories: categories[1] // Work
             ),
             Task(
                 id: UUID(),
@@ -52,8 +53,9 @@ class MyAppData: ObservableObject {
                 time: Time(hours: 1, minutes: 15, secondes: 0),
                 progress: 0,
                 deadline: Date().addingTimeInterval(60 * 60 * 24 * 30), // 30 jours plus tard
-                isFinish: false,
-                categories: [categories[2]] // Travel
+                isFinish: false, 
+                isImportant: true,
+                categories: categories[2] // Travel
             ),
             Task(
                 id: UUID(),
@@ -66,8 +68,9 @@ class MyAppData: ObservableObject {
                 time: Time(hours: 1, minutes: 0, secondes: 0),
                 progress: 0,
                 deadline: Date().addingTimeInterval(60 * 60 * 24 * 7), // 7 jours plus tard
-                isFinish: false,
-                categories: [categories[3]] // Home
+                isFinish: false, 
+                isImportant: false,
+                categories: categories[3] // Home
             ),
             Task(
                 id: UUID(),
@@ -80,8 +83,9 @@ class MyAppData: ObservableObject {
                 time: Time(hours: 3, minutes: 0, secondes: 0),
                 progress: 0,
                 deadline: Date().addingTimeInterval(60 * 60 * 24 * 3), // 3 jours plus tard
-                isFinish: false,
-                categories: [categories[1]] // Work
+                isFinish: false, 
+                isImportant: false,
+                categories: categories[1] // Work
             ),
             Task(
                 id: UUID(),
@@ -95,7 +99,8 @@ class MyAppData: ObservableObject {
                 progress: 0,
                 deadline: Date().addingTimeInterval(60 * 60 * 24 * 14), // 14 jours plus tard
                 isFinish: false,
-                categories: [categories[4]] // Health
+                isImportant: false,
+                categories: categories[4] // Health
             )
         ]
     }

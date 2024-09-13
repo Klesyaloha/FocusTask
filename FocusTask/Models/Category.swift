@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct Category : Identifiable {
+struct Category : Identifiable, Equatable {
     var id = UUID()
     var name: String
     var colorTheme: Color
