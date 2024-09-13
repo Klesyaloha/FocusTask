@@ -14,6 +14,12 @@
 		F39207442C937DE7007D891F /* FocusTaskTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39207432C937DE7007D891F /* FocusTaskTests.swift */; };
 		F392074E2C937DE7007D891F /* FocusTaskUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F392074D2C937DE7007D891F /* FocusTaskUITests.swift */; };
 		F39207502C937DE7007D891F /* FocusTaskUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F392074F2C937DE7007D891F /* FocusTaskUITestsLaunchTests.swift */; };
+		F39207602C938202007D891F /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = F392075F2C938202007D891F /* Task.swift */; };
+		F39207622C9382B7007D891F /* Subtask.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39207612C9382B7007D891F /* Subtask.swift */; };
+		F39207652C9383B4007D891F /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39207642C9383B4007D891F /* Time.swift */; };
+		F39207672C938DC6007D891F /* TasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39207662C938DC6007D891F /* TasksView.swift */; };
+		F39207692C939A4B007D891F /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39207682C939A4B007D891F /* Category.swift */; };
+		F392076B2C939D0B007D891F /* MyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F392076A2C939D0B007D891F /* MyData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +50,12 @@
 		F39207492C937DE7007D891F /* FocusTaskUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FocusTaskUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F392074D2C937DE7007D891F /* FocusTaskUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusTaskUITests.swift; sourceTree = "<group>"; };
 		F392074F2C937DE7007D891F /* FocusTaskUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusTaskUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		F392075F2C938202007D891F /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		F39207612C9382B7007D891F /* Subtask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subtask.swift; sourceTree = "<group>"; };
+		F39207642C9383B4007D891F /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
+		F39207662C938DC6007D891F /* TasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksView.swift; sourceTree = "<group>"; };
+		F39207682C939A4B007D891F /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		F392076A2C939D0B007D891F /* MyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +108,9 @@
 			children = (
 				F39207322C937DE4007D891F /* FocusTaskApp.swift */,
 				F39207342C937DE4007D891F /* ContentView.swift */,
+				F392075E2C9381E2007D891F /* Models */,
+				F392075D2C9381CF007D891F /* Views */,
+				F392075C2C9381C2007D891F /* ViewModels */,
 				F39207362C937DE7007D891F /* Assets.xcassets */,
 				F39207382C937DE7007D891F /* Preview Content */,
 			);
@@ -125,6 +140,33 @@
 				F392074F2C937DE7007D891F /* FocusTaskUITestsLaunchTests.swift */,
 			);
 			path = FocusTaskUITests;
+			sourceTree = "<group>";
+		};
+		F392075C2C9381C2007D891F /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				F392076A2C939D0B007D891F /* MyData.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		F392075D2C9381CF007D891F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F39207662C938DC6007D891F /* TasksView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		F392075E2C9381E2007D891F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F392075F2C938202007D891F /* Task.swift */,
+				F39207612C9382B7007D891F /* Subtask.swift */,
+				F39207642C9383B4007D891F /* Time.swift */,
+				F39207682C939A4B007D891F /* Category.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,7 +300,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				F39207352C937DE4007D891F /* ContentView.swift in Sources */,
+				F39207672C938DC6007D891F /* TasksView.swift in Sources */,
+				F39207622C9382B7007D891F /* Subtask.swift in Sources */,
+				F39207652C9383B4007D891F /* Time.swift in Sources */,
+				F392076B2C939D0B007D891F /* MyData.swift in Sources */,
 				F39207332C937DE4007D891F /* FocusTaskApp.swift in Sources */,
+				F39207602C938202007D891F /* Task.swift in Sources */,
+				F39207692C939A4B007D891F /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

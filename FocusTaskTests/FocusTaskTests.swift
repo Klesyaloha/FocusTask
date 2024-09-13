@@ -10,6 +10,12 @@ import XCTest
 
 final class FocusTaskTests: XCTestCase {
 
+    func testAddition() {
+        let math = Math()
+        let result = math.addition(2, 3)
+        XCTAssertEqual(result, 5, "L'addition devrait donner 5")
+    }
+    
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
