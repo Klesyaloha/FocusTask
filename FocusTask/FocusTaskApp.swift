@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct FocusTaskApp: App {
+    @EnvironmentObject var myAppData: MyAppData
+    
     var body: some Scene {
         WindowGroup {
             TasksView()
+                .environmentObject(MyAppData())
         }
     }
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F31320E22C95B90500926BBE /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F31320E12C95B90500926BBE /* AddTaskView.swift */; };
+		F340F3D72C99FF67009DFF2B /* DetailsTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F340F3D62C99FF66009DFF2B /* DetailsTaskView.swift */; };
 		F39207332C937DE4007D891F /* FocusTaskApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39207322C937DE4007D891F /* FocusTaskApp.swift */; };
 		F39207352C937DE4007D891F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39207342C937DE4007D891F /* ContentView.swift */; };
 		F39207372C937DE7007D891F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F39207362C937DE7007D891F /* Assets.xcassets */; };
@@ -40,6 +42,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F31320E12C95B90500926BBE /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
+		F340F3D62C99FF66009DFF2B /* DetailsTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsTaskView.swift; sourceTree = "<group>"; };
 		F392072F2C937DE4007D891F /* FocusTask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FocusTask.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F39207322C937DE4007D891F /* FocusTaskApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusTaskApp.swift; sourceTree = "<group>"; };
 		F39207342C937DE4007D891F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -154,6 +158,8 @@
 			isa = PBXGroup;
 			children = (
 				F39207662C938DC6007D891F /* TasksView.swift */,
+				F31320E12C95B90500926BBE /* AddTaskView.swift */,
+				F340F3D62C99FF66009DFF2B /* DetailsTaskView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -302,10 +308,12 @@
 				F39207352C937DE4007D891F /* ContentView.swift in Sources */,
 				F39207672C938DC6007D891F /* TasksView.swift in Sources */,
 				F39207622C9382B7007D891F /* Subtask.swift in Sources */,
+				F31320E22C95B90500926BBE /* AddTaskView.swift in Sources */,
 				F39207652C9383B4007D891F /* Time.swift in Sources */,
 				F392076B2C939D0B007D891F /* MyData.swift in Sources */,
 				F39207332C937DE4007D891F /* FocusTaskApp.swift in Sources */,
 				F39207602C938202007D891F /* Task.swift in Sources */,
+				F340F3D72C99FF67009DFF2B /* DetailsTaskView.swift in Sources */,
 				F39207692C939A4B007D891F /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

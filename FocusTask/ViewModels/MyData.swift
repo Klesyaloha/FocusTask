@@ -33,14 +33,17 @@ class MyAppData: ObservableObject {
                 subtasks: [
                     Subtask(id: 1, title: "Acheter de l'argile", isFinish: false),
                     Subtask(id: 2, title: "Préparer le four", isFinish: false),
-                    Subtask(id: 3, title: "Rassembler les outils", isFinish: false)
+                    Subtask(id: 3, title: "Rassembler les outils", isFinish: false),
+                    Subtask(id: 4, title: "Acheter de l'argile", isFinish: false),
+                    Subtask(id: 5, title: "Préparer le four", isFinish: false),
+                    Subtask(id: 6, title: "Rassembler les outils", isFinish: false)
                 ],
                 time: Time(hours: 2, minutes: 30, secondes: 0),
-                progress: 0,
                 deadline: Date(),
-                isFinish: false, 
+                isFinish: false,
                 isImportant: true,
-                categories: categories[1] // Work
+                isInDetails: false,
+                categorie: categories[1] // Work
             ),
             Task(
                 id: UUID(),
@@ -51,11 +54,11 @@ class MyAppData: ObservableObject {
                     Subtask(id: 3, title: "Préparer l'itinéraire", isFinish: false)
                 ],
                 time: Time(hours: 1, minutes: 15, secondes: 0),
-                progress: 0,
                 deadline: Date().addingTimeInterval(60 * 60 * 24 * 30), // 30 jours plus tard
                 isFinish: false, 
                 isImportant: true,
-                categories: categories[2] // Travel
+                isInDetails: false,
+                categorie: categories[2] // Travel
             ),
             Task(
                 id: UUID(),
@@ -66,11 +69,11 @@ class MyAppData: ObservableObject {
                     Subtask(id: 3, title: "Dépoussiérer les meubles", isFinish: false)
                 ],
                 time: Time(hours: 1, minutes: 0, secondes: 0),
-                progress: 0,
                 deadline: Date().addingTimeInterval(60 * 60 * 24 * 7), // 7 jours plus tard
                 isFinish: false, 
                 isImportant: false,
-                categories: categories[3] // Home
+                isInDetails: false,
+                categorie: categories[3] // Home
             ),
             Task(
                 id: UUID(),
@@ -81,11 +84,11 @@ class MyAppData: ObservableObject {
                     Subtask(id: 3, title: "Faire une répétition", isFinish: false)
                 ],
                 time: Time(hours: 3, minutes: 0, secondes: 0),
-                progress: 0,
                 deadline: Date().addingTimeInterval(60 * 60 * 24 * 3), // 3 jours plus tard
                 isFinish: false, 
                 isImportant: false,
-                categories: categories[1] // Work
+                isInDetails: false,
+                categorie: categories[1] // Work
             ),
             Task(
                 id: UUID(),
@@ -96,12 +99,19 @@ class MyAppData: ObservableObject {
                     Subtask(id: 3, title: "Prendre rendez-vous chez le dentiste", isFinish: false)
                 ],
                 time: Time(hours: 1, minutes: 45, secondes: 0),
-                progress: 0,
                 deadline: Date().addingTimeInterval(60 * 60 * 24 * 14), // 14 jours plus tard
                 isFinish: false,
                 isImportant: false,
-                categories: categories[4] // Health
+                isInDetails: false,
+                categorie: categories[4] // Health
             )
         ]
+    }
+    
+    // Fonction pour supprimer une tâche en fonction de son ID
+    func deleteTask(_ task: Task) {
+        if let index = tasks.firstIndex(where: { $0.id == task.id }) {
+            tasks.remove(at: index)
+        }
     }
 }
