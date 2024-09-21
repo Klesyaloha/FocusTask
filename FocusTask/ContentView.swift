@@ -7,87 +7,121 @@
 
 import SwiftUI
 
-struct MyTask: Identifiable {
-    let id = UUID()
-    var title: String
-}
-
-struct SwipeToDeleteView: View {
-    @State private var tasks = [
-        MyTask(title: "Task 1"),
-        MyTask(title: "Task 2"),
-        MyTask(title: "Task 3")
+struct ContentView: View {
+    @State private var showModal = false
+    @State private var selectedItem: Item? = nil
+    @State private var selectedItemPosition: CGRect = .zero
+    
+    let items = [
+        Item(id: 1, title: "Élément 1", details: "Détails de l'élément 1"),
+        Item(id: 2, title: "Élément 2", details: "Détails de l'élément 2"),
+        Item(id: 3, title: "Élément 3", details: "Détails de l'élément 3")
     ]
     
     var body: some View {
-        VStack {
-            ForEach(tasks) { task in
-                TaskRow(task: task, tasks: $tasks)
-                    .padding(.horizontal)
-                    .padding(.vertical, 4)
-            }
-        }
-        .padding()
-    }
-}
-
-struct TaskRow: View {
-    let task: MyTask
-    @Binding var tasks: [MyTask]
-    
-    @State private var offset: CGFloat = 0
-    
-    var body: some View {
         ZStack {
-            HStack {
-                Button(action: {
-                    if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-                        tasks.remove(at: index)
-                    }
-                }) {
-                    Image(systemName: "trash")
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.red)
-                        .clipShape(Circle())
-                }
-                .padding(.trailing, 20)
-                .offset(x: offset > 0 ? -offset : 0)
-            }
-            .animation(.default, value: offset)
-            
-            HStack {
-                Text(task.title)
-                    .padding()
-                Spacer()
-            }
-            .background(Color.white)
-            .cornerRadius(10)
-            .shadow(radius: 5)
-            .offset(x: offset)
-            .gesture(
-                DragGesture()
-                    .onChanged { value in
-                        let dragAmount = value.translation.width
-                        if dragAmount < 0 {
-                            offset = dragAmount
+            VStack {
+                ForEach(items) { item in
+                    Button(action: {
+                        withAnimation {
+                            self.selectedItem = item
+                            self.showModal = true
                         }
+                    }) {
+                        Text(item.title)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
                     }
-                    .onEnded { value in
-                        if value.translation.width < -100 {
-                            if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-                                tasks.remove(at: index)
+                    .background(GeometryReader { geo -> Color in
+                        DispatchQueue.main.async {
+                            if item == selectedItem {
+                                self.selectedItemPosition = geo.frame(in: .global)
                             }
                         }
-                        offset = 0
-                    }
-            )
+                        return Color.clear
+                    })
+                    .padding()
+                }
+            }
+            .blur(radius: showModal ? 10 : 0)
+            
+            // Afficher la modale si un élément est sélectionné
+            if showModal, let selectedItem = selectedItem {
+                ModalView(isPresented: $showModal, item: selectedItem, initialPosition: selectedItemPosition)
+                    .transition(.identity) // Pas de transition par défaut
+            }
         }
     }
 }
 
-struct SwipeToDeleteView_Previews: PreviewProvider {
+struct ModalView: View {
+    @Binding var isPresented: Bool
+    var item: Item
+    var initialPosition: CGRect
+    
+    @State private var modalPosition: CGSize = .zero
+    @State private var scale: CGFloat = 0.1
+
+    var body: some View {
+        VStack {
+            Text(item.title)
+                .font(.title)
+                .padding()
+            
+            Text(item.details)
+                .padding()
+            
+            Button("Fermer") {
+                withAnimation {
+                    isPresented = false
+                }
+            }
+            .padding()
+            .background(Color.red)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 20).fill(Color.white))
+        .shadow(radius: 20)
+        .offset(x: modalPosition.width, y: modalPosition.height)
+        .scaleEffect(scale) // Échelle de la modale
+        .onAppear {
+            let screenSize = UIScreen.main.bounds.size
+            let targetPosition = CGSize(
+                width: screenSize.width / 2 - initialPosition.midX,
+                height: screenSize.height / 2 - initialPosition.midY
+            )
+            
+            // Déplacer la modale de sa position initiale au centre
+            modalPosition = targetPosition
+            withAnimation(.spring()) {
+                modalPosition = .zero // Déplacer la modal au centre
+                scale = 1.0 // Élargir à la taille normale
+            }
+        }
+        .onDisappear {
+            // Réinitialiser la position et l'échelle à la position d'origine
+            modalPosition = CGSize(
+                width: initialPosition.midX - UIScreen.main.bounds.width / 2,
+                height: initialPosition.midY - UIScreen.main.bounds.height / 2
+            )
+            scale = 0.1 // Rappetisser avant de disparaître
+        }
+    }
+}
+
+struct Item: Identifiable, Equatable {
+    var id: Int
+    var title: String
+    var details: String
+}
+
+struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        SwipeToDeleteView()
+        ContentView()
     }
 }

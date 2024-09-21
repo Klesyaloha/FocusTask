@@ -18,6 +18,7 @@ struct TasksView: View {
     @State private var categoryTitle = ""
     @State private var categoryColor : Color = .black
     @State private var categorySymbol = "heart"
+    @State private var detailsIsPresented = false
     
     let symbols = ["star.circle.fill", "heart.circle.fill", "flame.circle.fill", "bolt.circle.fill", "leaf.circle.fill", "moon.circle.fill", "pencil.circle.fill", "flag.circle.fill", "gift.circle.fill", "book.circle.fill"]
 
@@ -158,8 +159,8 @@ struct TasksView: View {
                                                             }
                                                         }, label: {
                                                             Image(systemName: subtask.isFinish ? "checkmark.circle.fill" : "circle")
-                                                                           .font(.system(size: 12))
-                                                                           .foregroundStyle(.black)
+                                                                .font(.system(size: 12))
+                                                                .foregroundStyle(.black)
                                                         })
                                                         
                                                         
@@ -225,6 +226,9 @@ struct TasksView: View {
                                         Spacer()
                                     }
                                 }
+                                .sheet(isPresented: $detailsIsPresented, content: {
+                                    Rectangle()
+                                })
                             }
                         }
                     }

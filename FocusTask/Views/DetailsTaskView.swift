@@ -8,112 +8,127 @@
 import SwiftUI
 
 struct DetailsTaskView: View {
+    @Binding var detailsIsPresented : Bool
     @EnvironmentObject var myAppData: MyAppData  // Utilisez @EnvironmentObject pour accéder aux données
     
     var body: some View {
-        Text("Salut")
-            .padding()
-        VStack(spacing: 8) {
-            
-            Text(myAppData.tasks[0].title)
-                .font(.system(size: 20))
-                .fontWeight(.semibold)
-                .multilineTextAlignment(.center)
-            
-            HStack(spacing: 8) {
-                Spacer()
+        VStack {
+            VStack(spacing: 8) {
                 
-                Button(action: {
-                    if let index = myAppData.tasks.firstIndex(where: { $0.id == myAppData.tasks[0].id }) {
-                        myAppData.tasks[index].isFinish.toggle()
-                    }
-                }, label: {
-                    Image(systemName: myAppData.tasks[0].isFinish ? "checkmark.square.fill" : "square")
-                        .foregroundColor(.black)
-                        .padding(.leading, 16)
-                        .font(.system(size: 27))
-                })
-                VStack(alignment: .leading, spacing: 5) {
+                Text(myAppData.tasks[0].title)
+                    .font(.system(size: 20))
+                    .fontWeight(.semibold)
+                    .multilineTextAlignment(.center)
+                
+                HStack(spacing: 8) {
+                    Spacer()
                     
+                    Button(action: {
+                        if let index = myAppData.tasks.firstIndex(where: { $0.id == myAppData.tasks[0].id }) {
+                            myAppData.tasks[index].isFinish.toggle()
+                        }
+                    }, label: {
+                        Image(systemName: myAppData.tasks[0].isFinish ? "checkmark.square.fill" : "square")
+                            .foregroundColor(.black)
+                            .padding(.leading, 16)
+                            .font(.system(size: 27))
+                    })
                     VStack(alignment: .leading, spacing: 5) {
-                        ForEach(Array(myAppData.tasks[0].subtasks.enumerated()), id: \.element.id) { index, subtask in
-                            HStack(spacing: 4){
-                                Button(action: {
-                                    // Recherche de l'index de la tâche dans myAppData
-                                    if let taskIndex = myAppData.tasks.firstIndex(where: { $0.id == myAppData.tasks[0].id }) {
-                                        // Accéder à la sous-tâche via l'index et la modifier
-                                        var updatedTask = myAppData.tasks[taskIndex]
-                                        updatedTask.subtasks[index].isFinish.toggle()
-                                        myAppData.tasks[taskIndex] = updatedTask
-                                    }
-                                }, label: {
-                                    Image(systemName: subtask.isFinish ? "checkmark.circle.fill" : "circle")
-                                        .font(.system(size: 12))
-                                        .foregroundStyle(.black)
-                                })
-                                
-                                
-                                
-                                Text(subtask.title)
-                                    .font(.system(size: 9))
-                                    .fontWeight(.medium)
+                        
+                        VStack(alignment: .leading, spacing: 5) {
+                            ForEach(Array(myAppData.tasks[0].subtasks.enumerated()), id: \.element.id) { index, subtask in
+                                HStack(spacing: 4){
+                                    Button(action: {
+                                        // Recherche de l'index de la tâche dans myAppData
+                                        if let taskIndex = myAppData.tasks.firstIndex(where: { $0.id == myAppData.tasks[0].id }) {
+                                            // Accéder à la sous-tâche via l'index et la modifier
+                                            var updatedTask = myAppData.tasks[taskIndex]
+                                            updatedTask.subtasks[index].isFinish.toggle()
+                                            myAppData.tasks[taskIndex] = updatedTask
+                                        }
+                                    }, label: {
+                                        Image(systemName: subtask.isFinish ? "checkmark.circle.fill" : "circle")
+                                            .font(.system(size: 12))
+                                            .foregroundStyle(.black)
+                                    })
+                                    
+                                    
+                                    
+                                    Text(subtask.title)
+                                        .font(.system(size: 9))
+                                        .fontWeight(.medium)
+                                }
                             }
+                            .padding(.leading, 8.0)
+                            
                         }
-                        .padding(.leading, 8.0)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         
+                        HStack {
+                            Circle()
+                                .frame(width: 14.0, height: 14.0)
+                                .foregroundStyle(myAppData.tasks[0].categorie.colorTheme)
+                            
+                            ZStack {
+                                // Cercle d'arrière-plan
+                                Circle()
+                                
+                                    .stroke(lineWidth: 3.5)
+                                    .opacity(0.3)
+                                    .foregroundColor(Color.gray)
+                                
+                                // Cercle de progression
+                                Circle()
+                                    .trim(from: 0.0, to: CGFloat(myAppData.tasks[0].progress))  // Le "to:" dépend de la progression
+                                    .stroke(style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
+                                    .foregroundColor(Color.green)  // Change la couleur si besoin
+                                    .rotationEffect(Angle(degrees: -90))  // Pour commencer à 12h au lieu de 3h
+                                
+                                // Texte au centre affichant le pourcentage
+                                Text(String(format: "%.0f%%", myAppData.tasks[0].progress * 100))
+                                    .font(.system(size: 5))
+                                    .bold()
+                            }
+                            .frame(width: 18)
+                            
+                            Text(formattedDate(from: myAppData.tasks[0].deadline))
+                                .font(.system(size: 10))
+                                .fontWeight(.semibold)
+                            
+                        }
+                        .foregroundColor(.gray)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    HStack {
-                        Circle()
-                            .frame(width: 14.0, height: 14.0)
-                            .foregroundStyle(myAppData.tasks[0].categorie.colorTheme)
-                        
-                        ZStack {
-                            // Cercle d'arrière-plan
-                            Circle()
-                            
-                                .stroke(lineWidth: 3.5)
-                                .opacity(0.3)
-                                .foregroundColor(Color.gray)
-                            
-                            // Cercle de progression
-                            Circle()
-                                .trim(from: 0.0, to: CGFloat(myAppData.tasks[0].progress))  // Le "to:" dépend de la progression
-                                .stroke(style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
-                                .foregroundColor(Color.green)  // Change la couleur si besoin
-                                .rotationEffect(Angle(degrees: -90))  // Pour commencer à 12h au lieu de 3h
-                            
-                            // Texte au centre affichant le pourcentage
-                            Text(String(format: "%.0f%%", myAppData.tasks[0].progress * 100))
-                                .font(.system(size: 5))
-                                .bold()
-                        }
-                        .frame(width: 18)
-                        
-                        Text(formattedDate(from: myAppData.tasks[0].deadline))
-                            .font(.system(size: 10))
-                            .fontWeight(.semibold)
-                        
-                    }
-                    .foregroundColor(.gray)
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .font(.system(size: 27))
+                        .foregroundColor(myAppData.tasks[0].categorie.colorTheme)
+                        .padding(.trailing, 16)
+                    
+                    Spacer()
                 }
                 
-                Image(systemName: "exclamationmark.circle.fill")
-                    .font(.system(size: 27))
-                    .foregroundColor(myAppData.tasks[0].categorie.colorTheme)
-                    .padding(.trailing, 16)
-                
-                Spacer()
             }
+            .padding(.vertical)
+            .background(.white)
+            .frame(width: 366)
+            .cornerRadius(23)
+            .shadow(radius: 10)
+        .environmentObject(MyAppData())
+        // Ajoutez un environnement pour les prévisualisations
             
+            Button("Fermer") {
+                // Fermer la vue modale
+                withAnimation {
+                    detailsIsPresented = false
+                }
+            }
+            .font(.title2)
+            .padding()
+            .background(Color.red)
+            .foregroundColor(.white)
+            .cornerRadius(10)
         }
-        .padding(.vertical)
-        .background(.white)
-        .frame(width: 366)
-        .cornerRadius(23)
-        .shadow(radius: 10)
-        .environmentObject(MyAppData())// Ajoutez un environnement pour les prévisualisations
+        
     }
     
     // Fonction pour formater la date en fonction de sa distance par rapport à aujourd'hui
@@ -157,7 +172,7 @@ struct DetailsTaskView: View {
 }
 
 #Preview {
-    DetailsTaskView()
+    DetailsTaskView(detailsIsPresented: .constant(true))
 //    DetailsTaskView(task:
 //                        Task(
 //                            id: UUID(),
