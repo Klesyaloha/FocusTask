@@ -7,8 +7,9 @@
 
 import Foundation
 
-struct Task : Identifiable {
-    let id : UUID
+struct Task : Identifiable{
+    static var number = 0
+    let id = number + 1
     var title: String
     var subtasks: [Subtask]
     var time: Time
@@ -22,9 +23,22 @@ struct Task : Identifiable {
     var isImportant: Bool
     var isInDetails: Bool
     var categorie: Category
+    var position: CGPoint
     
-    init(id: UUID, title: String, subtasks: [Subtask], time: Time, deadline: Date, isFinish: Bool, isImportant: Bool, isInDetails: Bool, categorie: Category) {
-        self.id = id
+    init(){
+        self.title = ""
+        self.subtasks = []
+        self.time = Time(hours: 0, minutes: 0, secondes: 0)
+        self.deadline = Date()
+        self.isFinish = false
+        self.isImportant = false
+        self.isInDetails = false
+        self.categorie = Category()
+        self.position = CGPoint()
+    }
+    
+    init(title: String, subtasks: [Subtask], time: Time, deadline: Date, isFinish: Bool, isImportant: Bool, isInDetails: Bool, categorie: Category, position: CGPoint) {
+        Task.number += 1
         self.title = title
         self.subtasks = subtasks
         self.time = time
@@ -33,6 +47,7 @@ struct Task : Identifiable {
         self.isImportant = isImportant
         self.isInDetails = isInDetails
         self.categorie = categorie
+        self.position = CGPoint()
     }
 }
 

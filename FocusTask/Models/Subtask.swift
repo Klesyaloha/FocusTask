@@ -7,8 +7,14 @@
 
 import Foundation
 
-struct Subtask : Identifiable {
+class Subtask : Identifiable {
     var id: Int
     var title: String
     var isFinish: Bool
+    
+    init(id: Int, title: String, isFinish: Bool) {
+        self.id = id
+        self.title = title
+        self.isFinish = isFinish
+    }
 }

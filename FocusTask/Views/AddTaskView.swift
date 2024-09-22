@@ -182,6 +182,6 @@ struct AddTaskView: View {
 }
 
 #Preview {
-    AddTaskView(task: Task(id: UUID(), title: "", subtasks: [], time: Time(hours: 0, minutes: 0, secondes: 0), deadline: Date(), isFinish: false, isImportant: false, isInDetails: false, categorie: Category(name: "", colorTheme: .gray, symbolName: "")), addViewPresented: .constant(true))
+    AddTaskView(task: Task(title: "", subtasks: [], time: Time(hours: 0, minutes: 0, secondes: 0), deadline: Date(), isFinish: false, isImportant: false, isInDetails: false, categorie: Category(name: "", colorTheme: .gray, symbolName: ""), position: CGPoint()), addViewPresented: .constant(true))
         .environmentObject(MyAppData())  // Ajoutez un environnement pour les prévisualisations
 }

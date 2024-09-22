@@ -9,13 +9,20 @@ import SwiftUI
 
 struct DetailsTaskView: View {
     @Binding var detailsIsPresented : Bool
+    
+    var initialPosition: CGPoint
+    
+    @State private var detailsViewPosition: CGPoint = CGPoint(x: 0, y: 300)
+    @State private var scale: CGFloat = 0.1
+    @State var taskId : Int
+    
     @EnvironmentObject var myAppData: MyAppData  // Utilisez @EnvironmentObject pour accéder aux données
     
     var body: some View {
         VStack {
             VStack(spacing: 8) {
                 
-                Text(myAppData.tasks[0].title)
+                Text(myAppData.tasks[taskId - 1].title)
                     .font(.system(size: 20))
                     .fontWeight(.semibold)
                     .multilineTextAlignment(.center)
@@ -24,11 +31,11 @@ struct DetailsTaskView: View {
                     Spacer()
                     
                     Button(action: {
-                        if let index = myAppData.tasks.firstIndex(where: { $0.id == myAppData.tasks[0].id }) {
+                        if let index = myAppData.tasks.firstIndex(where: { $0.id == myAppData.tasks[taskId - 1].id }) {
                             myAppData.tasks[index].isFinish.toggle()
                         }
                     }, label: {
-                        Image(systemName: myAppData.tasks[0].isFinish ? "checkmark.square.fill" : "square")
+                        Image(systemName: myAppData.tasks[taskId - 1].isFinish ? "checkmark.square.fill" : "square")
                             .foregroundColor(.black)
                             .padding(.leading, 16)
                             .font(.system(size: 27))
@@ -36,16 +43,13 @@ struct DetailsTaskView: View {
                     VStack(alignment: .leading, spacing: 5) {
                         
                         VStack(alignment: .leading, spacing: 5) {
-                            ForEach(Array(myAppData.tasks[0].subtasks.enumerated()), id: \.element.id) { index, subtask in
+                            ForEach(Array(myAppData.tasks[taskId - 1].subtasks.enumerated()), id: \.element.id) { index, subtask in
                                 HStack(spacing: 4){
                                     Button(action: {
-                                        // Recherche de l'index de la tâche dans myAppData
-                                        if let taskIndex = myAppData.tasks.firstIndex(where: { $0.id == myAppData.tasks[0].id }) {
-                                            // Accéder à la sous-tâche via l'index et la modifier
-                                            var updatedTask = myAppData.tasks[taskIndex]
-                                            updatedTask.subtasks[index].isFinish.toggle()
-                                            myAppData.tasks[taskIndex] = updatedTask
-                                        }
+                                        // Accéder à la sous-tâche via l'index et la modifier
+                                        let updatedTask = myAppData.tasks[taskId - 1]
+                                        updatedTask.subtasks[index].isFinish.toggle()
+                                        myAppData.tasks[taskId - 1] = updatedTask
                                     }, label: {
                                         Image(systemName: subtask.isFinish ? "checkmark.circle.fill" : "circle")
                                             .font(.system(size: 12))
@@ -67,7 +71,7 @@ struct DetailsTaskView: View {
                         HStack {
                             Circle()
                                 .frame(width: 14.0, height: 14.0)
-                                .foregroundStyle(myAppData.tasks[0].categorie.colorTheme)
+                                .foregroundStyle(myAppData.tasks[taskId - 1].categorie.colorTheme)
                             
                             ZStack {
                                 // Cercle d'arrière-plan
@@ -79,19 +83,19 @@ struct DetailsTaskView: View {
                                 
                                 // Cercle de progression
                                 Circle()
-                                    .trim(from: 0.0, to: CGFloat(myAppData.tasks[0].progress))  // Le "to:" dépend de la progression
+                                    .trim(from: 0.0, to: CGFloat(myAppData.tasks[taskId - 1].progress))  // Le "to:" dépend de la progression
                                     .stroke(style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
                                     .foregroundColor(Color.green)  // Change la couleur si besoin
                                     .rotationEffect(Angle(degrees: -90))  // Pour commencer à 12h au lieu de 3h
                                 
                                 // Texte au centre affichant le pourcentage
-                                Text(String(format: "%.0f%%", myAppData.tasks[0].progress * 100))
+                                Text(String(format: "%.0f%%", myAppData.tasks[taskId - 1].progress * 100))
                                     .font(.system(size: 5))
                                     .bold()
                             }
                             .frame(width: 18)
                             
-                            Text(formattedDate(from: myAppData.tasks[0].deadline))
+                            Text(formattedDate(from: myAppData.tasks[taskId - 1].deadline))
                                 .font(.system(size: 10))
                                 .fontWeight(.semibold)
                             
@@ -101,25 +105,28 @@ struct DetailsTaskView: View {
                     
                     Image(systemName: "exclamationmark.circle.fill")
                         .font(.system(size: 27))
-                        .foregroundColor(myAppData.tasks[0].categorie.colorTheme)
+                        .foregroundColor(myAppData.tasks[taskId - 1].categorie.colorTheme)
                         .padding(.trailing, 16)
                     
                     Spacer()
                 }
                 
             }
-            .padding(.vertical)
+            .padding(.vertical, 30)
             .background(.white)
             .frame(width: 366)
             .cornerRadius(23)
             .shadow(radius: 10)
-        .environmentObject(MyAppData())
-        // Ajoutez un environnement pour les prévisualisations
             
             Button("Fermer") {
-                // Fermer la vue modale
-                withAnimation {
-                    detailsIsPresented = false
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    // Réinitialiser la position et l'échelle à la position d'origine
+                    detailsViewPosition = CGPoint(x: 0, y: -UIScreen.main.bounds.size.width + initialPosition.y)
+                    scale = 0.1 // Rappetisser avant de disparaître
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        // Code à exécuter après 1 secondes
+                        detailsIsPresented = false
+                    }
                 }
             }
             .font(.title2)
@@ -128,7 +135,17 @@ struct DetailsTaskView: View {
             .foregroundColor(.white)
             .cornerRadius(10)
         }
-        
+        .scaleEffect(scale) // Échelle de la modale
+        .onAppear {
+            let targetPosition = CGPoint(x: 0, y: -UIScreen.main.bounds.size.width + initialPosition.y)
+            // Déplacer la modale de sa position initiale au centre
+            detailsViewPosition = targetPosition
+            withAnimation(.easeIn(duration: 0.5)) {
+                detailsViewPosition = .zero // Déplacer la modal au centre
+                scale = 1.0 // Élargir à la taille normale
+            }
+        }
+        .offset(x: detailsViewPosition.x, y: detailsViewPosition.y)
     }
     
     // Fonction pour formater la date en fonction de sa distance par rapport à aujourd'hui
@@ -171,25 +188,14 @@ struct DetailsTaskView: View {
     }
 }
 
-#Preview {
-    DetailsTaskView(detailsIsPresented: .constant(true))
-//    DetailsTaskView(task:
-//                        Task(
-//                            id: UUID(),
-//                            title: "Faire les courses pour la poterie",
-//                            subtasks: [
-//                                Subtask(id: 1, title: "Acheter de l'argile", isFinish: false),
-//                                Subtask(id: 2, title: "Préparer le four", isFinish: false),
-//                                Subtask(id: 3, title: "Rassembler les outils", isFinish: false),
-//                                Subtask(id: 4, title: "Acheter de l'argile", isFinish: false),
-//                                Subtask(id: 5, title: "Préparer le four", isFinish: false),
-//                                Subtask(id: 6, title: "Rassembler les outils", isFinish: false)
-//                            ],
-//                            time: Time(hours: 2, minutes: 30, secondes: 0),
-//                            deadline: Date(),
-//                            isFinish: false,
-//                            isImportant: true,
-//                            categorie: Category(name: "Work", colorTheme: .red, symbolName: "building.2.crop.circle.fill") // Work
-//                        ))
-    .environmentObject(MyAppData())
+struct DetailsTaskView_Previews: PreviewProvider {
+    static var previews: some View {
+        // Aperçu avec des données simulées
+        DetailsTaskView(
+            detailsIsPresented: .constant(true),
+            initialPosition: CGPoint(x: 0, y: 0),
+            taskId: 1
+        )
+        .environmentObject(MyAppData())
+    }
 }

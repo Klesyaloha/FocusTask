@@ -28,7 +28,6 @@ class MyAppData: ObservableObject {
     private func initializeTasks() {
         self.tasks = [
             Task(
-                id: UUID(),
                 title: "Faire les courses pour la poterie",
                 subtasks: [
                     Subtask(id: 1, title: "Acheter de l'argile", isFinish: false),
@@ -43,10 +42,10 @@ class MyAppData: ObservableObject {
                 isFinish: false,
                 isImportant: true,
                 isInDetails: false,
-                categorie: categories[1] // Work
+                categorie: categories[1], // Work
+                position: CGPoint()
             ),
             Task(
-                id: UUID(),
                 title: "Planifier les vacances d'été",
                 subtasks: [
                     Subtask(id: 1, title: "Réserver les billets d'avion", isFinish: false),
@@ -58,10 +57,10 @@ class MyAppData: ObservableObject {
                 isFinish: false, 
                 isImportant: true,
                 isInDetails: false,
-                categorie: categories[2] // Travel
+                categorie: categories[2], // Travel
+                position: CGPoint()
             ),
             Task(
-                id: UUID(),
                 title: "Nettoyer la maison",
                 subtasks: [
                     Subtask(id: 1, title: "Passer l'aspirateur", isFinish: false),
@@ -73,10 +72,10 @@ class MyAppData: ObservableObject {
                 isFinish: false, 
                 isImportant: false,
                 isInDetails: false,
-                categorie: categories[3] // Home
+                categorie: categories[3], // Home
+                position: CGPoint()
             ),
             Task(
-                id: UUID(),
                 title: "Préparer la présentation du projet",
                 subtasks: [
                     Subtask(id: 1, title: "Créer les slides", isFinish: false),
@@ -88,10 +87,10 @@ class MyAppData: ObservableObject {
                 isFinish: false, 
                 isImportant: false,
                 isInDetails: false,
-                categorie: categories[1] // Work
+                categorie: categories[1], // Work
+                position: CGPoint()
             ),
             Task(
-                id: UUID(),
                 title: "Réaliser un bilan de santé",
                 subtasks: [
                     Subtask(id: 1, title: "Faire une prise de sang", isFinish: false),
@@ -103,7 +102,8 @@ class MyAppData: ObservableObject {
                 isFinish: false,
                 isImportant: false,
                 isInDetails: false,
-                categorie: categories[4] // Health
+                categorie: categories[4], // Health
+                position: CGPoint()
             )
         ]
     }
