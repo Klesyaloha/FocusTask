@@ -20,121 +20,124 @@ struct DetailsTaskView: View {
     
     var body: some View {
         VStack {
-            VStack(spacing: 8) {
-                
-                Text(myAppData.tasks[taskId - 1].title)
-                    .font(.system(size: 20))
-                    .fontWeight(.semibold)
-                    .multilineTextAlignment(.center)
-                
-                HStack(spacing: 8) {
-                    Spacer()
-                    
-                    Button(action: {
-                        if let index = myAppData.tasks.firstIndex(where: { $0.id == myAppData.tasks[taskId - 1].id }) {
-                            myAppData.tasks[index].isFinish.toggle()
+            HStack {
+                Spacer()
+                Button(action: {
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        // Réinitialiser la position et l'échelle à la position d'origine
+                        detailsViewPosition = CGPoint(x: 0, y: -UIScreen.main.bounds.size.width + initialPosition.y)
+                        scale = 0.1 // Rappetisser avant de disparaître
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            // Code à exécuter après 1 secondes
+                            detailsIsPresented = false
                         }
-                    }, label: {
-                        Image(systemName: myAppData.tasks[taskId - 1].isFinish ? "checkmark.square.fill" : "square")
-                            .foregroundColor(.black)
-                            .padding(.leading, 16)
-                            .font(.system(size: 27))
-                    })
-                    VStack(alignment: .leading, spacing: 5) {
-                        
-                        VStack(alignment: .leading, spacing: 5) {
-                            ForEach(Array(myAppData.tasks[taskId - 1].subtasks.enumerated()), id: \.element.id) { index, subtask in
-                                HStack(spacing: 4){
-                                    Button(action: {
-                                        // Accéder à la sous-tâche via l'index et la modifier
-                                        let updatedTask = myAppData.tasks[taskId - 1]
-                                        updatedTask.subtasks[index].isFinish.toggle()
-                                        myAppData.tasks[taskId - 1] = updatedTask
-                                    }, label: {
-                                        Image(systemName: subtask.isFinish ? "checkmark.circle.fill" : "circle")
-                                            .font(.system(size: 12))
-                                            .foregroundStyle(.black)
-                                    })
-                                    
-                                    
-                                    
-                                    Text(subtask.title)
-                                        .font(.system(size: 9))
-                                        .fontWeight(.medium)
-                                }
-                            }
-                            .padding(.leading, 8.0)
-                            
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        
-                        HStack {
-                            Circle()
-                                .frame(width: 14.0, height: 14.0)
-                                .foregroundStyle(myAppData.tasks[taskId - 1].categorie.colorTheme)
-                            
-                            ZStack {
-                                // Cercle d'arrière-plan
-                                Circle()
-                                
-                                    .stroke(lineWidth: 3.5)
-                                    .opacity(0.3)
-                                    .foregroundColor(Color.gray)
-                                
-                                // Cercle de progression
-                                Circle()
-                                    .trim(from: 0.0, to: CGFloat(myAppData.tasks[taskId - 1].progress))  // Le "to:" dépend de la progression
-                                    .stroke(style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
-                                    .foregroundColor(Color.green)  // Change la couleur si besoin
-                                    .rotationEffect(Angle(degrees: -90))  // Pour commencer à 12h au lieu de 3h
-                                
-                                // Texte au centre affichant le pourcentage
-                                Text(String(format: "%.0f%%", myAppData.tasks[taskId - 1].progress * 100))
-                                    .font(.system(size: 5))
-                                    .bold()
-                            }
-                            .frame(width: 18)
-                            
-                            Text(formattedDate(from: myAppData.tasks[taskId - 1].deadline))
-                                .font(.system(size: 10))
-                                .fontWeight(.semibold)
-                            
-                        }
-                        .foregroundColor(.gray)
                     }
-                    
-                    Image(systemName: "exclamationmark.circle.fill")
-                        .font(.system(size: 27))
-                        .foregroundColor(myAppData.tasks[taskId - 1].categorie.colorTheme)
-                        .padding(.trailing, 16)
-                    
-                    Spacer()
-                }
-                
+                }, label: {
+                    Image(systemName: "xmark.circle")
+                        .font(.system(size: 30))
+                        .foregroundStyle(myAppData.tasks[taskId - 1].categorie.colorTheme)
+                })
+                .padding(.trailing, 20)
             }
-            .padding(.vertical, 30)
-            .background(.white)
-            .frame(width: 366)
-            .cornerRadius(23)
-            .shadow(radius: 10)
             
-            Button("Fermer") {
-                withAnimation(.easeInOut(duration: 0.5)) {
-                    // Réinitialiser la position et l'échelle à la position d'origine
-                    detailsViewPosition = CGPoint(x: 0, y: -UIScreen.main.bounds.size.width + initialPosition.y)
-                    scale = 0.1 // Rappetisser avant de disparaître
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        // Code à exécuter après 1 secondes
-                        detailsIsPresented = false
+            Text(myAppData.tasks[taskId - 1].title)
+                .font(.system(size: 20))
+                .fontWeight(.semibold)
+                .multilineTextAlignment(.center)
+                .padding(.bottom, 8)
+            
+            HStack(spacing: 8) {
+                Spacer()
+                
+                Button(action: {
+                    if let index = myAppData.tasks.firstIndex(where: { $0.id == myAppData.tasks[taskId - 1].id }) {
+                        myAppData.tasks[index].isFinish.toggle()
                     }
+                }, label: {
+                    Image(systemName: myAppData.tasks[taskId - 1].isFinish ? "checkmark.square.fill" : "square")
+                        .foregroundColor(.black)
+                        .padding(.leading, 16)
+                        .padding(.top, -42)
+                        .font(.system(size: 27))
+                })
+                VStack(alignment: .leading, spacing: 5) {
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(Array(myAppData.tasks[taskId - 1].subtasks.enumerated()), id: \.element.id) { index, subtask in
+                            HStack(spacing: 4){
+                                Button(action: {
+                                    // Accéder à la sous-tâche via l'index et la modifier
+                                    let updatedTask = myAppData.tasks[taskId - 1]
+                                    updatedTask.subtasks[index].isFinish.toggle()
+                                    myAppData.tasks[taskId - 1] = updatedTask
+                                }, label: {
+                                    Image(systemName: subtask.isFinish ? "checkmark.circle.fill" : "circle")
+                                        .font(.system(size: 20))
+                                        .foregroundStyle(.black)
+                                })
+                                
+                                
+                                
+                                Text(subtask.title)
+                                    .font(.system(size: 15))
+                                    .fontWeight(.regular)
+                            }
+                        }
+                        .padding(.leading, 8.0)
+                        
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    HStack(spacing: 15) {
+                        Circle()
+                            .frame(width: 20)
+                            .foregroundStyle(myAppData.tasks[taskId - 1].categorie.colorTheme)
+                        
+                        ZStack {
+                            // Cercle d'arrière-plan
+                            Circle()
+                                .stroke(lineWidth: 7)
+                                .frame(width: 30)
+                                .opacity(0.3)
+                                .foregroundColor(Color.gray)
+                            
+                            // Cercle de progression
+                            Circle()
+                                .trim(from: 0.0, to: CGFloat(myAppData.tasks[taskId - 1].progress))  // Le "to:" dépend de la progression
+                                .stroke(style: StrokeStyle(lineWidth: 7, lineCap: .round, lineJoin: .round))
+                                .foregroundColor(Color.green)  // Change la couleur si besoin
+                                .rotationEffect(Angle(degrees: -90))  // Pour commencer à 12h au lieu de 3h
+                            
+                            // Texte au centre affichant le pourcentage
+                            Text(String(format: "%.0f%%", myAppData.tasks[taskId - 1].progress * 100))
+                                .font(.system(size: 8))
+                                .bold()
+                        }
+                        .frame(width: 18)
+                        
+                        Text(formattedDate(from: myAppData.tasks[taskId - 1].deadline))
+                            .font(.system(size: 12))
+                            .fontWeight(.semibold)
+                        
+                    }
+                    .padding(.vertical, 10)
+                    .foregroundColor(.gray)
                 }
+                
+                Image(systemName: "exclamationmark.circle.fill")
+                    .font(.system(size: 27))
+                    .foregroundColor(myAppData.tasks[taskId - 1].categorie.colorTheme)
+                    .padding(.trailing, 16)
+                
+                Spacer()
             }
-            .font(.title2)
-            .padding()
-            .background(Color.red)
-            .foregroundColor(.white)
-            .cornerRadius(10)
+            
         }
+        .padding(.vertical, 20)
+        .background(.white)
+        .frame(width: UIScreen.main.bounds.size.width - 20)
+        .cornerRadius(23)
+        .shadow(radius: 10)
         .scaleEffect(scale) // Échelle de la modale
         .onAppear {
             let targetPosition = CGPoint(x: 0, y: -UIScreen.main.bounds.size.width + initialPosition.y)

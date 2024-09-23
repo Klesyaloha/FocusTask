@@ -11,8 +11,8 @@ struct TasksView: View {
     @State private var search: String = ""
     @State var selectedCategory = Category(name: "All", colorTheme: .gray, symbolName: "circle.fill")
     @State private var showCompleteOnly: Bool = false
-    @State private var title = "Tout"
-    @State private var titleColor: Color = .black
+    @State private var title = "All"
+    @State private var titleColor: Color = .gray
     @State private var addViewPresented = false
     @State private var addCategory = false
     @State private var categoryTitle = ""
@@ -130,7 +130,9 @@ struct TasksView: View {
                                         
                                         Button(action: {
                                             if let index = myAppData.tasks.firstIndex(where: { $0.id == task.id }) {
-                                                myAppData.tasks[index].isFinish.toggle()
+                                                withAnimation(.bouncy(duration: 1)) {
+                                                    myAppData.tasks[index].isFinish.toggle()
+                                                }
                                             }
                                         }, label: {
                                             Image(systemName: task.isFinish ? "checkmark.square.fill" : "square")
@@ -139,7 +141,7 @@ struct TasksView: View {
                                         })
                                         .background(GeometryReader { geo in
                                             let frame = geo.frame(in: .global)
-                                            let center = CGPoint(x: frame.midX, y: frame.minY - frame.height / 2)
+                                            let center = CGPoint(x: frame.midX, y: frame.minY - frame.height * 2)
                                             DispatchQueue.main.async {
                                                 if let index = myAppData.tasks.firstIndex(where: { $0.id == task.id }) {
                                                     myAppData.tasks[index].position = center
@@ -154,7 +156,7 @@ struct TasksView: View {
                                                 .fontWeight(.semibold)
                                             
                                             VStack(alignment: .leading, spacing: 3) {
-                                                ForEach(Array(task.subtasks.enumerated().suffix(task.subtasks.count > 3 ? 2 : 3)), id: \.element.id) { index, subtask in
+                                                ForEach(Array(task.subtasks.enumerated().prefix(task.subtasks.count > 3 ? 2 : 3)), id: \.element.id) { index, subtask in
                                                     HStack(spacing: 4) {
                                                         Button(action: {
                                                             if let taskIndex = myAppData.tasks.firstIndex(where: { $0.id == task.id }) {
@@ -211,19 +213,50 @@ struct TasksView: View {
                                             .foregroundColor(.gray)
                                         }
                                         
-                                        Image(systemName: "exclamationmark.circle.fill")
-                                            .font(.system(size: 27))
-                                            .foregroundColor(task.categorie.colorTheme)
+                                        Button(action: {
+                                            if let index = myAppData.tasks.firstIndex(where: { $0.id == task.id }) {
+                                                withAnimation {
+                                                    myAppData.tasks[index].isImportant.toggle()
+                                                }
+                                            }
+                                        }, label: {
+                                            Image(systemName: "exclamationmark.circle.fill")
+                                                .font(.system(size: 27))
+                                                .foregroundColor(task.isImportant ?  task.categorie.colorTheme : .gray)
+                                        })
                                         
                                         Spacer()
                                     }
                                     .foregroundStyle(.black)
-                                    .frame(width: 366, height: 96)
-                                    .padding(.vertical,  5)
-                                    .background(.white)
-                                    .cornerRadius(23)
-                                    .shadow(radius: 10)
+                                    .frame(width: UIScreen.main.bounds.size.width - 20, height: 96)
+                                    .padding(.all,  10)
+                                    .background(
+                                            Color.white
+                                                .cornerRadius(23)
+                                                .padding(.horizontal)
+                                                .shadow(color: .gray, radius: 3, x: 3, y: 5) // Ajout de l'ombre ici
+                                    )
                                 })
+                                .swipeActions(edge: .leading) {
+                                            Button(role: .destructive) {
+                                                // Action pour supprimer la tâche
+                                                if let index = myAppData.tasks.firstIndex(where: { $0.id == task.id }) {
+                                                    myAppData.tasks.remove(at: index)
+                                                }
+                                            } label: {
+                                                Label("Supprimer", systemImage: "trash")
+                                            }
+                                            
+                                            Button {
+                                                // Action pour marquer comme important ou pas
+                                                if let index = myAppData.tasks.firstIndex(where: { $0.id == task.id }) {
+                                                    myAppData.tasks[index].isImportant.toggle()
+                                                }
+                                            } label: {
+                                                Label("Important", systemImage: task.isImportant ? "star.fill" : "star")
+                                            }
+                                            .tint(.yellow)
+                                        }
                             }
                         }
                     }
@@ -236,6 +269,7 @@ struct TasksView: View {
                         ]), startPoint: .top, endPoint: .bottom)
                     )
                     .blur(radius: detailsIsPresented ? 10 : 0)
+                    .animation(.easeInOut(duration: 0.5), value: detailsIsPresented) // Animation du flou
                 }
                 .sheet(isPresented: $addViewPresented, content: {
                     AddTaskView(task: Task(title: "", subtasks: [], time: Time(hours: 0, minutes: 0, secondes: 0), deadline: Date(), isFinish: false, isImportant: false, isInDetails: false, categorie: selectedCategory, position: CGPoint()), addViewPresented: $addViewPresented)
@@ -295,9 +329,15 @@ struct TasksView: View {
             tasksToDisplay = tasksToDisplay.filter { $0.title.localizedCaseInsensitiveContains(search) }
         }
         
-        return tasksToDisplay.sorted(by: { $0.deadline < $1.deadline })
+        // Trier les tâches : d'abord par isImportant, puis par deadline
+        return tasksToDisplay.sorted {
+            if $0.isImportant != $1.isImportant {
+                return $0.isImportant // Place les importantes en premier
+            }
+            return $0.deadline < $1.deadline // Ensuite, trier par deadline
+        }
     }
-
+    
     private func filteredSearch() -> [Task] {
         if !search.isEmpty {
             return myAppData.tasks.filter { $0.title.localizedCaseInsensitiveContains(search) }

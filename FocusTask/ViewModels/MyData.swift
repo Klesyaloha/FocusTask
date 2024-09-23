@@ -55,7 +55,7 @@ class MyAppData: ObservableObject {
                 time: Time(hours: 1, minutes: 15, secondes: 0),
                 deadline: Date().addingTimeInterval(60 * 60 * 24 * 30), // 30 jours plus tard
                 isFinish: false, 
-                isImportant: true,
+                isImportant: false,
                 isInDetails: false,
                 categorie: categories[2], // Travel
                 position: CGPoint()
@@ -100,7 +100,7 @@ class MyAppData: ObservableObject {
                 time: Time(hours: 1, minutes: 45, secondes: 0),
                 deadline: Date().addingTimeInterval(60 * 60 * 24 * 14), // 14 jours plus tard
                 isFinish: false,
-                isImportant: false,
+                isImportant: true,
                 isInDetails: false,
                 categorie: categories[4], // Health
                 position: CGPoint()
