@@ -56,10 +56,13 @@ struct DetailsTaskView: View {
                 }, label: {
                     Image(systemName: myAppData.tasks[taskId - 1].isFinish ? "checkmark.square.fill" : "square")
                         .foregroundColor(.black)
-                        .padding(.leading, 16)
-                        .padding(.top, -42)
                         .font(.system(size: 27))
                 })
+                .padding(.top, -42)
+                .padding(.leading, 16)
+                .background(.red)
+//                .buttonStyle(.borderedProminent)
+                
                 VStack(alignment: .leading, spacing: 5) {
                     
                     VStack(alignment: .leading, spacing: 8) {

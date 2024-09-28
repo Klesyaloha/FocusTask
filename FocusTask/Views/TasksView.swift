@@ -17,9 +17,13 @@ struct TasksView: View {
     @State private var addCategory = false
     @State private var categoryTitle = ""
     @State private var categoryColor: Color = .black
-    @State private var categorySymbol = "heart"
+    @State private var categorySymbol = "heart.circle.fill"
     @State private var detailsIsPresented = false
     @State private var selectedTask: Task? = nil
+    @State private var showError = false
+    @State private var errorTitle = ""
+    @State private var errorMessage = ""
+
 
     let symbols = ["star.circle.fill", "heart.circle.fill", "flame.circle.fill", "bolt.circle.fill", "leaf.circle.fill", "moon.circle.fill", "pencil.circle.fill", "flag.circle.fill", "gift.circle.fill", "book.circle.fill"]
 
@@ -47,7 +51,7 @@ struct TasksView: View {
                             if addCategory {
                                 HStack {
                                     ColorPicker("", selection: $categoryColor)
-
+                                        .padding(EdgeInsets())
                                     Picker("Symbole", selection: $categorySymbol) {
                                         ForEach(symbols, id: \.self) { symbol in
                                             HStack {
@@ -61,17 +65,26 @@ struct TasksView: View {
                                     .pickerStyle(MenuPickerStyle())
 
                                     TextField(text: $categoryTitle, label: {
-                                        Text("Nom de la catégorie")
+                                        Text("Nom")
                                     })
 
                                     Button(action: {
-                                        if !categoryTitle.isEmpty {
+                                        if !categoryTitle.isEmpty  && myAppData.categories.contains(where: { $0.name == categoryTitle}) == false {
                                             myAppData.categories.append(Category(name: categoryTitle, colorTheme: categoryColor, symbolName: categorySymbol))
                                         }
                                         addCategory.toggle()
+                                        categoryColor = .black
+                                        categorySymbol = "heart.circle.fill"
+                                        if myAppData.categories.contains(where: { $0.name == categoryTitle}) {
+                                            errorTitle = "Catégorie existante"
+                                            errorMessage = "Une catégorie portant ce nom existe déjà. Veuillez choisir un autre nom."
+                                            showError = true
+                                        }
+                                        categoryTitle = ""
                                     }, label: {
                                         Image(systemName: "plus")
                                     })
+                                    .padding(.leading, 5)
                                 }
                                 .frame(height: 6.0)
                                 .font(.system(size: 13))
@@ -301,11 +314,16 @@ struct TasksView: View {
                         }
                     }
                 })
-                .padding(.top)
-
-//                if detailsIsPresented, let selectedTask = selectedTask {
-//                    print("Showing details for task: \(selectedTask.title)")
-//                }
+                .allowsHitTesting(detailsIsPresented || showError ? false : true)
+                .alert(isPresented: $showError) {
+                    Alert(
+                        title: Text(errorTitle),
+                        message: Text(errorMessage),
+                        dismissButton: .default(Text("OK"))
+                    )
+                }
+//                .padding(.top)
+                
                 if detailsIsPresented, let selectedTask = selectedTask {
                     DetailsTaskView(detailsIsPresented: $detailsIsPresented, initialPosition: selectedTask.position, taskId: selectedTask.id)
                         .transition(.identity)
