@@ -314,7 +314,7 @@ struct TasksView: View {
                         }
                     }
                 })
-                .allowsHitTesting(detailsIsPresented || showError ? false : true)
+                .allowsHitTesting(detailsIsPresented ? false : true)
                 .alert(isPresented: $showError) {
                     Alert(
                         title: Text(errorTitle),
@@ -336,7 +336,7 @@ struct TasksView: View {
         var tasksToDisplay = myAppData.tasks
         
         if showCompleteOnly {
-            tasksToDisplay = tasksToDisplay.filter { $0.isFinish }
+            tasksToDisplay = tasksToDisplay.filter {  selectedCategory.name != "All" ? $0.isFinish && $0.categorie == selectedCategory : $0.isFinish }
         } else if selectedCategory.name != "All" {
             tasksToDisplay = tasksToDisplay.filter { $0.categorie == selectedCategory && !$0.isFinish }
         } else {
